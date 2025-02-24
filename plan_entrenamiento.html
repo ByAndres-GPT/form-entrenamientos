@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Entrenamiento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .exercise {
+            margin-left: 20px;
+        }
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #0056b3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #004494;
+        }
+    </style>
+</head>
+<body>
+    <a href="#" class="back-button" id="backButton">Atrás</a>
+    <div id="planDetails"></div>
+
+    <script>
+        const plan = JSON.parse(localStorage.getItem('trainingPlan'));
+        const planDetails = document.getElementById('planDetails');
+
+        if (plan) {
+            planDetails.innerHTML = `<h1>${plan.plan_name}</h1>`;
+            plan.training_days.forEach(day => {
+                const dayCard = document.createElement('div');
+                dayCard.className = 'card';
+                dayCard.innerHTML = `<h2>${day.day}</h2>`;
+                day.exercises.forEach(exercise => {
+                    dayCard.innerHTML += `
+                        <div class="exercise">
+                            <strong>${exercise.name}</strong> - ${exercise.sets} sets de ${exercise.reps} repeticiones, ${exercise.rest} segundos de descanso. Grupo muscular: ${exercise.muscle_group}
+                        </div>`;
+                });
+                planDetails.appendChild(dayCard);
+            });
+        } else {
+            planDetails.innerHTML = '<p>No se encontró ningún plan de entrenamiento.</p>';
+        }
+
+        // Manejar el botón de Atrás
+        document.getElementById('backButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+            localStorage.removeItem('trainingPlan'); // Borrar el localStorage
+            window.location.href = 'index.html'; // Redirigir a la primera página
+        });
+    </script>
+</body>
+</html>

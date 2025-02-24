@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Entrenamiento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #004494;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Formulario de Entrenamiento</h1>
+    <form id="trainingForm">
+        <input type="number" id="size" name="size" placeholder="Tamaño (cm)" required>
+        <input type="number" id="weight" name="weight" placeholder="Peso (kg)" required>
+        <select id="goal" name="goal" required>
+            <option value="gain muscle">Ganar Músculo</option>
+            <option value="lose weight">Perder Peso</option>
+            <option value="maintain">Mantener</option>
+        </select>
+        <input type="number" id="availableDays" name="availableDays" placeholder="Días disponibles por semana" required>
+        <button type="submit">Obtener Plan</button>
+    </form>
+
+    <div id="loading" class="loading">
+        Cargando...
+    </div>
+
+    <script>
+        document.getElementById('trainingForm').onsubmit = function (event) {
+            event.preventDefault();
+
+            // Mostrar pantalla de carga
+            const loading = document.getElementById('loading');
+            loading.classList.add('active');
+
+            const size = document.getElementById('size').value;
+            const weight = document.getElementById('weight').value;
+            const goal = document.getElementById('goal').value;
+            const availableDays = document.getElementById('availableDays').value;
+
+            const url = `https://magicloops.dev/api/loop/b19f52c4-d481-4922-a82a-4a127b084663/run?size=${size}&weight=${weight}&goal=${goal}&available+days=${availableDays}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    localStorage.setItem('trainingPlan', JSON.stringify(data));
+                    window.location.href = 'plan_entrenamiento.html';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al obtener el plan de entrenamiento.');
+                })
+                .finally(() => {
+                    // Ocultar pantalla de carga
+                    loading.classList.remove('active');
+                });
+        };
+    </script>
+</body>
+
+</html>
